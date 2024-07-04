@@ -1,0 +1,18 @@
+# Receive build mode argument
+ARG MODE=local
+
+FROM postgres:latest
+
+# Copy the appropriate .env file based on the build mode
+COPY .env.${MODE} ./.env
+
+# Set environment variables from the .env file
+ENV POSTGRES_DB=${POSTGRES_DB}
+ENV POSTGRES_USER=${POSTGRES_USER}
+ENV POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+
+# Expose the PostgreSQL port
+EXPOSE 5432
+
+# Set the default command for the container
+CMD ["postgres"]

@@ -7,6 +7,7 @@ import {
   bigint,
   varchar,
   pgEnum,
+  PgColumn,
 } from "drizzle-orm/pg-core";
 import type { AdapterAccount } from "@auth/core/adapters";
 
@@ -17,9 +18,10 @@ import type { AdapterAccount } from "@auth/core/adapters";
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
 
-// Change name of copy_hub_t3 to create prefixes for tables:
-export const pgTable = pgTableCreator((name) => `copy_hub_t3_${name}`);
 
+export const pgTable = pgTableCreator((name) => `myamble_${name}`);
+
+// application level tables
 export const roleEnum = pgEnum('role', ["USER", "OWNER"])
 
 export const users = pgTable("user", {
@@ -28,9 +30,16 @@ export const users = pgTable("user", {
   email: text("email").notNull(),
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
-  role: roleEnum('role').default("USER")
+  role: roleEnum('role').default("USER"),
+  adminUser: text("adminUser").references(():PgColumn => users.id, { onDelete: "no action" }),
+  responsibleForAccounts: text("responsibleForAccounts").references(():PgColumn => accounts.userId, { onDelete: "restrict" })
 });
+export const UserSelect = users.$inferSelect
+export const UserInsert = users.$inferInsert
 
+export const 
+
+// system stuff
 export const accounts = pgTable(
   "account",
   {
@@ -49,10 +58,12 @@ export const accounts = pgTable(
     id_token: text("id_token"),
     session_state: text("session_state"),
   },
-  (account) => ({
+  (account: any) => ({
     compoundKey: primaryKey(account.provider, account.providerAccountId),
   }),
 );
+export const AccountSelect = accounts.$inferSelect
+export const AccountInsert = accounts.$inferInsert
 
 export const sessions = pgTable("session", {
   sessionToken: text("sessionToken").notNull().primaryKey(),
@@ -61,6 +72,8 @@ export const sessions = pgTable("session", {
     .references(() => users.id, { onDelete: "cascade" }),
   expires: timestamp("expires", { mode: "date" }).notNull(),
 });
+export const SessionSelect = sessions.$inferSelect
+export const SessionInsert = sessions.$inferInsert
 
 export const verificationTokens = pgTable(
   "verificationToken",
@@ -69,7 +82,10 @@ export const verificationTokens = pgTable(
     token: text("token").notNull(),
     expires: timestamp("expires", { mode: "date" }).notNull(),
   },
-  (vt) => ({
+  (vt: any) => ({
     compoundKey: primaryKey(vt.identifier, vt.token),
   }),
 );
+export const VerificationTokenSelect = verificationTokens.$inferSelect
+export const VerificationTokenInsert = verificationTokens.$inferInsert
+

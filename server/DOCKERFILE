@@ -1,0 +1,26 @@
+# Receive build mode argument
+ARG MODE=local
+
+# Use the official Node.js 18 image.
+FROM node:18-alpine
+
+# Create and change to the app directory.
+WORKDIR /usr/src/app
+
+# Copy application dependency manifests to the container image.
+COPY package*.json ./
+
+# Install production dependencies.
+RUN npm install --only=production
+
+# Copy local code to the container image.
+COPY . .
+
+# Copy the appropriate .env file based on the build mode
+COPY .env.${MODE} ./.env
+
+# Build the application.
+RUN npm run build
+
+# Run the application on container startup.
+CMD [ "npm", "start" ]
