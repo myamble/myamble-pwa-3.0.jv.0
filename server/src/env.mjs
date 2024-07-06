@@ -36,6 +36,16 @@ export const env = createEnv({
     // Add ` on ID and SECRET if you want to make sure they're not empty
     GITHUB_CLIENT_ID: z.string(),
     GITHUB_CLIENT_SECRET: z.string(),
+
+    // Email (for reset password)
+    EMAIL_SERVER_HOST: z.string(),
+    EMAIL_SERVER_PORT: z.number(),
+    EMAIL_SERVER_USER: z.string(),
+    EMAIL_SERVER_PASSWORD: z.string(),
+    EMAIL_FROM: z.string().email(),
+
+    // AI keys
+    ANTHROPIC_API_KEY: z.string(),
   },
 
   /**

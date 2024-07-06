@@ -11,7 +11,7 @@ import GithubProvider from "next-auth/providers/github";
 
 import { env } from "~/env.mjs";
 import { db } from "~/server/db";
-import { pgTable, users } from "~/server/db/schema";
+import { pgTable, UserRole, users } from "~/server/db/schema";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -20,22 +20,21 @@ import { pgTable, users } from "~/server/db/schema";
  * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
  */
 
-enum UserRole {
-  USER = "USER",
-  ADMIN = "OWNER",
-}
 declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
       role: UserRole;
+      contactNumber?: string;
     } & DefaultSession["user"];
   }
 
   interface User {
     role: UserRole;
+    contactNumber?: string;
   }
 }
+
 declare module "next-auth/adapters" {
   export interface AdapterUser {
     role?: UserRole;
@@ -91,9 +90,9 @@ export const authOptions: NextAuthOptions = {
       };
     },
     async signIn({ user, account, profile }) {
-      console.log(user)
-      console.log(account)
-      console.log(profile)
+      console.log(user);
+      console.log(account);
+      console.log(profile);
 
       const isAllowedToSignIn = true; // You can add your own login logic here
       if (isAllowedToSignIn) {
@@ -122,3 +121,22 @@ export const authOptions: NextAuthOptions = {
 };
 
 export const getServerAuthSession = () => getServerSession(authOptions);
+
+// src/server/auth.ts
+import { randomBytes } from "crypto";
+import { passwordResetTokens } from "~/server/db/schema";
+
+export async function generatePasswordResetToken(
+  userId: string,
+): Promise<string> {
+  const token = randomBytes(32).toString("hex");
+  const expires = new Date(Date.now() + 3600000); // 1 hour from now
+
+  await db.insert(passwordResetTokens).values({
+    token,
+    userId,
+    expires,
+  });
+
+  return token;
+}

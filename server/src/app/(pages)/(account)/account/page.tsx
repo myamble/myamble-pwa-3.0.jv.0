@@ -3,7 +3,7 @@
 
 import { z } from "zod";
 import { useAuth } from "~/hooks/useAuth";
-import CustomForm from "~/components/Form";
+import CustomForm from "~/app/_components/Form";
 import { useState } from "react";
 import { Alert, AlertDescription } from "~/components/ui/alert";
 
