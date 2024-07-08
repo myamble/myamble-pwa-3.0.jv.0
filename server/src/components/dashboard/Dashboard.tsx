@@ -13,6 +13,9 @@ import {
   TableRow,
 } from "~/components/ui/table";
 import Link from "next/link";
+import { SurveyCompletionChart } from "~/components/analytics/SurveyCompletionChart";
+import { ParticipantEngagementChart } from "~/components/analytics/ParticipantEngagementChart";
+import { ResponseTrendChart } from "~/components/analytics/ResponseTrendChart";
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -25,6 +28,8 @@ export default function Dashboard() {
     api.survey.getAssignedSurveysForAdmin.useQuery();
   const { data: completedSurveys, isLoading: completedLoading } =
     api.survey.getCompletedSurveysForAdmin.useQuery();
+  const { data: analyticsData, isLoading: analyticsLoading } =
+    api.analytics.getOverviewData.useQuery();
 
   useEffect(() => {
     if (user && user.role !== "ADMIN" && user.role !== "SOCIAL_WORKER") {
@@ -59,18 +64,21 @@ export default function Dashboard() {
         >
           Completed Surveys
         </Button>
+        <Button
+          variant={activeTab === "analytics" ? "default" : "outline"}
+          onClick={() => setActiveTab("analytics")}
+        >
+          Analytics
+        </Button>
       </div>
-      <Card>
-        <CardHeader>
-          <CardTitle>
-            {activeTab === "assigned"
-              ? "Assigned Surveys"
-              : "Completed Surveys"}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {activeTab === "assigned" ? (
-            assignedLoading ? (
+
+      {activeTab === "assigned" && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Assigned Surveys</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {assignedLoading ? (
               <p>Loading assigned surveys...</p>
             ) : (
               <Table>
@@ -105,45 +113,101 @@ export default function Dashboard() {
                   ))}
                 </TableBody>
               </Table>
-            )
-          ) : completedLoading ? (
-            <p>Loading completed surveys...</p>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Survey Name</TableHead>
-                  <TableHead>Participant</TableHead>
-                  <TableHead>Completion Date</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {completedSurveys?.map((submission) => (
-                  <TableRow key={submission.id}>
-                    <TableCell>{submission.survey.name}</TableCell>
-                    <TableCell>{submission.user.name}</TableCell>
-                    <TableCell>
-                      {new Date(submission.createdAt).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell>
-                      <Button asChild size="sm">
-                        <Link href={`/survey-results/${submission.id}`}>
-                          View Results
-                        </Link>
-                      </Button>
-                    </TableCell>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {activeTab === "completed" && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Completed Surveys</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {completedLoading ? (
+              <p>Loading completed surveys...</p>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Survey Name</TableHead>
+                    <TableHead>Participant</TableHead>
+                    <TableHead>Completion Date</TableHead>
+                    <TableHead>Actions</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </CardContent>
-      </Card>
+                </TableHeader>
+                <TableBody>
+                  {completedSurveys?.map((submission) => (
+                    <TableRow key={submission.id}>
+                      <TableCell>{submission.survey.name}</TableCell>
+                      <TableCell>{submission.user.name}</TableCell>
+                      <TableCell>
+                        {new Date(submission.createdAt).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>
+                        <Button asChild size="sm">
+                          <Link href={`/survey-results/${submission.id}`}>
+                            View Results
+                          </Link>
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {activeTab === "analytics" && (
+        <div className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Survey Completion Rate</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {analyticsLoading ? (
+                <p>Loading analytics data...</p>
+              ) : (
+                <SurveyCompletionChart
+                  data={analyticsData?.surveyCompletionData}
+                />
+              )}
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Participant Engagement</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {analyticsLoading ? (
+                <p>Loading analytics data...</p>
+              ) : (
+                <ParticipantEngagementChart
+                  data={analyticsData?.participantEngagementData}
+                />
+              )}
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Response Trends</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {analyticsLoading ? (
+                <p>Loading analytics data...</p>
+              ) : (
+                <ResponseTrendChart data={analyticsData?.responseTrendData} />
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       <Card className="mt-6">
         <CardHeader>
-          <CardTitle>Survey Results</CardTitle>
+          <CardTitle>All Surveys</CardTitle>
         </CardHeader>
         <CardContent>
           {surveysLoading ? (

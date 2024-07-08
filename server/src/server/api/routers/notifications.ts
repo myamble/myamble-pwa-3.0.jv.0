@@ -21,7 +21,7 @@ export const notificationsRouter = createTRPCRouter({
   }),
 
   markAsRead: protectedProcedure
-    .input(z.object({ id: z.string() }))
+    .input(z.object({ id: z.number() }))
     .mutation(async ({ ctx, input }) => {
       await ctx.db
         .update(notifications)
@@ -39,7 +39,7 @@ export const notificationsRouter = createTRPCRouter({
   createNotification: protectedProcedure
     .input(
       z.object({
-        userId: z.string(),
+        userId: z.number(),
         type: z.enum(["new_assignment", "survey_completed"]),
         content: z.string(),
       }),

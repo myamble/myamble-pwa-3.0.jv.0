@@ -1,5 +1,5 @@
 "use client";
-
+// why do we have two AIAnalysis components?
 import { useState } from "react";
 import { api } from "~/trpc/react";
 import { Button } from "~/components/ui/button";

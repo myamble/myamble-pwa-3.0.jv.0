@@ -21,10 +21,7 @@ export async function POST(req: Request) {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  await db
-    .update(users)
-    .set({ password: hashedPassword })
-    .where(eq(users.id, user.id));
+  await db.update(users).set({ hashedPassword }).where(eq(users.id, user.id));
 
   return NextResponse.json({ message: "Password reset successfully" });
 }

@@ -8,6 +8,8 @@ import {
 } from "next-auth";
 import { type DefaultJWT, type JWT } from "next-auth/jwt";
 import GithubProvider from "next-auth/providers/github";
+import GoogleProvider from "next-auth/providers/google";
+import FacebookProvider from "next-auth/providers/facebook";
 
 import { env } from "~/env.mjs";
 import { db } from "~/server/db";
@@ -23,7 +25,7 @@ import { pgTable, UserRole, users } from "~/server/db/schema";
 declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
-      id: string;
+      id: number;
       role: UserRole;
       contactNumber?: string;
     } & DefaultSession["user"];
@@ -60,7 +62,7 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     session({ session, token }: { session: Session; token: JWT }) {
       if (token) {
-        session.user.id = token.id;
+        session.user.id = parseInt(token.id);
         session.user.email = token.email;
         session.user.role = token.role;
         session.user.image = token.picture; // replace 'image' with 'picture'
@@ -72,6 +74,7 @@ export const authOptions: NextAuthOptions = {
         .select()
         .from(users)
         .where(sql`${users.email} = ${token.email}`);
+
       const dbUser = userCheck[0];
 
       if (!dbUser) {
@@ -80,7 +83,7 @@ export const authOptions: NextAuthOptions = {
       }
 
       return {
-        id: dbUser.id,
+        id: dbUser.id.toString(),
         role: dbUser.role as UserRole,
         email: dbUser.email,
         emailVerified: dbUser.emailVerified,
@@ -110,11 +113,18 @@ export const authOptions: NextAuthOptions = {
     secret: env.NEXTAUTH_SECRET,
   },
   secret: env.NEXTAUTH_SECRET,
-  adapter: DrizzleAdapter(db, pgTable),
   providers: [
     GithubProvider({
       clientId: env.GITHUB_CLIENT_ID,
       clientSecret: env.GITHUB_CLIENT_SECRET,
+    }),
+    GoogleProvider({
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
+    }),
+    FacebookProvider({
+      clientId: env.FACEBOOK_CLIENT_ID,
+      clientSecret: env.FACEBOOK_CLIENT_SECRET,
     }),
   ],
   pages: {},
@@ -127,7 +137,7 @@ import { randomBytes } from "crypto";
 import { passwordResetTokens } from "~/server/db/schema";
 
 export async function generatePasswordResetToken(
-  userId: string,
+  userId: number,
 ): Promise<string> {
   const token = randomBytes(32).toString("hex");
   const expires = new Date(Date.now() + 3600000); // 1 hour from now

@@ -1,5 +1,6 @@
 // src/app/(pages)/(admin)/myamble-ai/page.tsx
 "use client";
+// why do we have 2 AIAnalysis components?
 
 import { useState } from "react";
 import { Button } from "~/components/ui/button";

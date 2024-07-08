@@ -8,7 +8,7 @@ import {
   PgColumn,
   jsonb,
   boolean,
-  uuid,
+  serial,
 } from "drizzle-orm/pg-core";
 import type { AdapterAccount } from "@auth/core/adapters";
 
@@ -35,14 +35,14 @@ export const roleEnum = pgEnum(
 );
 
 export const users = pgTable("user", {
-  id: uuid("id").defaultRandom().notNull().primaryKey(),
+  id: serial("id").primaryKey(),
   name: text("name"),
   email: text("email").notNull(),
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   contactNumber: text("contact_number"),
   image: text("image"),
   role: roleEnum("role").default(UserRoleEnum.PARTICIPANT),
-  adminUserId: text("adminUserId").references((): PgColumn => users.id, {
+  adminUserId: integer("adminUserId").references((): PgColumn => users.id, {
     onDelete: "no action",
   }),
   hashedPassword: text("hashedPassword"),
@@ -51,12 +51,12 @@ export const UserSelect = users.$inferSelect;
 export const UserInsert = users.$inferInsert;
 
 export const survey = pgTable("survey", {
-  id: text("id").notNull().primaryKey(),
+  id: serial("id").primaryKey(),
   name: text("name").notNull(),
   description: text("description"),
   createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
   updatedAt: timestamp("updatedAt", { mode: "date" }).defaultNow(),
-  creatorId: text("creatorId").references((): PgColumn => users.id, {
+  creatorId: integer("creatorId").references((): PgColumn => users.id, {
     onDelete: "cascade",
   }),
   data: jsonb("data"),
@@ -65,13 +65,13 @@ export const SurveySelect = survey.$inferSelect;
 export const SurveyInsert = survey.$inferInsert;
 
 export const surveyAssignment = pgTable("survey_assignment", {
-  id: text("id").notNull().primaryKey(),
+  id: serial("id").primaryKey(),
   createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
   updatedAt: timestamp("updatedAt", { mode: "date" }).defaultNow(),
-  surveyId: text("surveyId").references((): PgColumn => survey.id, {
+  surveyId: integer("surveyId").references((): PgColumn => survey.id, {
     onDelete: "cascade",
   }),
-  userId: text("userId").references((): PgColumn => users.id, {
+  userId: integer("userId").references((): PgColumn => users.id, {
     onDelete: "cascade",
   }),
   occurrence: text("occurrence")
@@ -79,7 +79,7 @@ export const surveyAssignment = pgTable("survey_assignment", {
     .notNull(),
   startDate: timestamp("startDate", { mode: "date" }).notNull(),
   endDate: timestamp("endDate", { mode: "date" }),
-  assignedBy: text("assignedBy").references((): PgColumn => users.id, {
+  assignedBy: integer("assignedBy").references((): PgColumn => users.id, {
     onDelete: "set null",
   }),
   status: text("status")
@@ -92,10 +92,10 @@ export const SurveyAssignmentSelect = surveyAssignment.$inferSelect;
 export const SurveyAssignmentInsert = surveyAssignment.$inferInsert;
 
 export const surveySubmission = pgTable("survey_submission", {
-  id: text("id").notNull().primaryKey(),
+  id: serial("id").primaryKey(),
   createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
   updatedAt: timestamp("updatedAt", { mode: "date" }).defaultNow(),
-  surveyAssignmentId: text("surveyAssignmentId").references(
+  surveyAssignmentId: integer("surveyAssignmentId").references(
     (): PgColumn => surveyAssignment.id,
     {
       onDelete: "cascade",
@@ -112,8 +112,8 @@ export const notificationTypeEnum = pgEnum("notification_type", [
 ]);
 
 export const notifications = pgTable("notifications", {
-  id: text("id").notNull().primaryKey(),
-  userId: text("userId")
+  id: serial("id").primaryKey(),
+  userId: integer("userId")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
   type: notificationTypeEnum("type").notNull(),
@@ -126,7 +126,7 @@ export type Notification = typeof notifications.$inferSelect;
 export type InsertNotification = typeof notifications.$inferInsert;
 
 export const conversation = pgTable("conversation", {
-  id: text("id").notNull().primaryKey(),
+  id: serial("id").primaryKey(),
   createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
   updatedAt: timestamp("updatedAt", { mode: "date" }).defaultNow(),
 });
@@ -136,12 +136,12 @@ export const ConversationInsert = conversation.$inferInsert;
 export const conversationParticipant = pgTable(
   "conversation_participant",
   {
-    userId: text("userId")
+    userId: integer("userId")
       .notNull()
       .references(() => users.id, {
         onDelete: "cascade",
       }),
-    conversationId: text("conversationId")
+    conversationId: integer("conversationId")
       .notNull()
       .references(() => conversation.id, {
         onDelete: "cascade",
@@ -160,11 +160,11 @@ export const ConversationParticipantInsert =
   conversationParticipant.$inferInsert;
 
 export const message = pgTable("message", {
-  id: text("id").notNull().primaryKey(),
+  id: serial("id").primaryKey(),
   createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
   updatedAt: timestamp("updatedAt", { mode: "date" }).defaultNow(),
   content: text("content"),
-  conversationId: text("conversationId").references(
+  conversationId: integer("conversationId").references(
     (): PgColumn => conversation.id,
     {
       onDelete: "cascade",
@@ -176,9 +176,9 @@ export const MessageInsert = message.$inferInsert;
 
 // src/server/db/schema.ts
 export const passwordResetTokens = pgTable("password_reset_token", {
-  id: text("id").notNull().primaryKey(),
+  id: serial("id").primaryKey(),
   token: text("token").notNull(),
-  userId: text("userId")
+  userId: integer("userId")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
   expires: timestamp("expires", { mode: "date" }).notNull(),
@@ -188,7 +188,7 @@ export const passwordResetTokens = pgTable("password_reset_token", {
 export const accounts = pgTable(
   "account",
   {
-    userId: text("userId")
+    userId: integer("userId")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     type: text("type").$type<AdapterAccount["type"]>().notNull(),
@@ -212,7 +212,7 @@ export const AccountInsert = accounts.$inferInsert;
 
 export const sessions = pgTable("session", {
   sessionToken: text("sessionToken").notNull().primaryKey(),
-  userId: text("userId")
+  userId: integer("userId")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
   expires: timestamp("expires", { mode: "date" }).notNull(),
@@ -236,8 +236,8 @@ export const VerificationTokenInsert = verificationTokens.$inferInsert;
 
 // Add a new table for survey questions
 export const surveyQuestion = pgTable("survey_question", {
-  id: text("id").notNull().primaryKey(),
-  surveyId: text("surveyId").references((): PgColumn => survey.id, {
+  id: serial("id").primaryKey(),
+  surveyId: integer("surveyId").references((): PgColumn => survey.id, {
     onDelete: "cascade",
   }),
   text: text("text").notNull(),
