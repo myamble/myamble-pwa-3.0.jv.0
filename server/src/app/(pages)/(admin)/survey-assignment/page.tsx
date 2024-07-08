@@ -14,7 +14,6 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
 
 export default function SurveyAssignment() {
   const { user } = useAuth();

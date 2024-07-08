@@ -3,12 +3,11 @@
 import { useState } from "react";
 import { api } from "~/trpc/react";
 import { Button } from "~/components/ui/button";
-import { Textarea } from "~/components/ui/textarea";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { darcula } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
-import { FileUpload } from "~/app/_components/FileUpload";
+import { FileUpload } from "~/components/FileUpload";
 
 export default function AIAnalysis() {
   const [message, setMessage] = useState("");
@@ -80,9 +79,9 @@ export default function AIAnalysis() {
             >
               <ReactMarkdown
                 components={{
-                  code({ node, inline, className, children, ...props }) {
+                  code({ node, className, children, ...props }) {
                     const match = /language-(\w+)/.exec(className || "");
-                    return !inline && match ? (
+                    return match ? (
                       <SyntaxHighlighter
                         style={darcula}
                         language={match[1]}

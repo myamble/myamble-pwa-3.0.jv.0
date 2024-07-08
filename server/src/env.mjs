@@ -43,7 +43,7 @@ export const env = createEnv({
 
     // Email (for reset password)
     EMAIL_SERVER_HOST: z.string(),
-    EMAIL_SERVER_PORT: z.number(),
+    EMAIL_SERVER_PORT: z.string(),
     EMAIL_SERVER_USER: z.string(),
     EMAIL_SERVER_PASSWORD: z.string(),
     EMAIL_FROM: z.string().email(),

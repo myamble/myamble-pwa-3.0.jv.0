@@ -21,7 +21,7 @@ import {
   Pie,
   Cell,
 } from "recharts";
-import { ExportSurveyResults } from "~/app/_components/ExportSurveyResults";
+import { ExportSurveyResults } from "~/components/survey/ExportSurveyResults";
 
 const COLORS = [
   "#0088FE",
