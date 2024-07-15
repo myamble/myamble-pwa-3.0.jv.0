@@ -3,8 +3,8 @@
 
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { Alert, AlertDescription } from "~/components/ui/alert";
-import { Button } from "~/components/ui/button";
+import { Alert, AlertDescription } from "~/app/_components/ui/alert";
+import { Button } from "~/app/_components/ui/button";
 
 export default function VerifyEmail() {
   const [status, setStatus] = useState<"loading" | "success" | "error">(

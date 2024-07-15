@@ -11,7 +11,7 @@ import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import FacebookProvider from "next-auth/providers/facebook";
 
-import { env } from "~/env.mjs";
+import { env } from "~/server/env.mjs";
 import { db } from "~/server/db";
 import { pgTable, UserRole, users } from "~/server/db/schema";
 

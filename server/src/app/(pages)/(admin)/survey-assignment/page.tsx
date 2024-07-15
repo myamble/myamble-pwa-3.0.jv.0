@@ -3,17 +3,17 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "~/hooks/useAuth";
+import { useAuth } from "~/app/_hooks/useAuth";
 import { api } from "~/trpc/react";
-import { Button } from "~/components/ui/button";
+import { Button } from "~/app/_components/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "~/components/ui/select";
-import { Input } from "~/components/ui/input";
+} from "~/app/_components/ui/select";
+import { Input } from "~/app/_components/ui/input";
 
 export default function SurveyAssignment() {
   const { user } = useAuth();

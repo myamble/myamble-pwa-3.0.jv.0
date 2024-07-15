@@ -3,7 +3,7 @@
 // why do we have 2 AIAnalysis components?
 
 import { useState } from "react";
-import { Button } from "~/components/ui/button";
+import { Button } from "~/app/_components/ui/button";
 
 export default function MyAmbleAI() {
   const [query, setQuery] = useState("");

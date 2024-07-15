@@ -2,9 +2,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useAuth } from "~/hooks/useAuth";
-import { Input } from "~/components/ui/input";
-import { Button } from "~/components/ui/button";
+import { useAuth } from "~/app/_hooks/useAuth";
+import { Input } from "~/app/_components/ui/input";
+import { Button } from "~/app/_components/ui/button";
 
 export default function Messenger() {
   const { user } = useAuth();

@@ -3,11 +3,20 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useAuth } from "~/hooks/useAuth";
+import { useAuth } from "~/app/_hooks/useAuth";
 import { api } from "~/trpc/react";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
-import { Spinner } from "~/components/ui/spinner";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "~/app/_components/ui/card";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "~/app/_components/ui/alert";
+import { Spinner } from "~/app/_components/ui/spinner";
 import {
   BarChart,
   Bar,
@@ -21,7 +30,7 @@ import {
   Pie,
   Cell,
 } from "recharts";
-import { ExportSurveyResults } from "~/components/survey/ExportSurveyResults";
+import { ExportSurveyResults } from "~/app/_components/survey/ExportSurveyResults";
 
 const COLORS = [
   "#0088FE",

@@ -2,7 +2,7 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { CodeInterpreter } from "@e2b/code-interpreter";
 import Anthropic from "@anthropic-ai/sdk";
-import { env } from "~/env.mjs";
+import { env } from "~/server/env.mjs";
 import { TRPCError } from "@trpc/server";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";

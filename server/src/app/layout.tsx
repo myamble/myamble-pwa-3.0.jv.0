@@ -1,11 +1,12 @@
 import { Inter } from "next/font/google";
 import { cookies } from "next/headers";
-
+import { useEffect, useState } from "react";
 import { TRPCReactProvider } from "~/trpc/react";
-import { Providers } from "./Theme/Providers";
-import Header from "~/components/ui/Header";
-import Footer from "~/components/ui/Footer";
-import { ServiceWorkerRegistration } from "~/components/ServiceWorkerRegistration";
+import { Providers } from "~/app/_Theme/Providers";
+import Header from "~/app/_components/ui/Header";
+import Footer from "~/app/_components/ui/Footer";
+import { ServiceWorkerRegistration } from "~/app/_components/ServiceWorkerRegistration";
+import { cn } from "~/app/_lib/utils";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -25,7 +26,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`font-sans ${inter.variable}`}>
+      <body
+        className={cn(
+          "min-h-screen bg-background font-sans antialiased",
+          inter.variable,
+        )}
+      >
         <TRPCReactProvider cookies={cookies().toString()}>
           <Providers>
             <div className="flex min-h-screen flex-col">

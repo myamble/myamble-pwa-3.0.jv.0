@@ -1,0 +1,126 @@
+// hooks/useAuth.tsx
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import { User } from "next-auth";
+import { getServerAuthSession } from "~/server/auth";
+
+export function useAuth() {
+  const [user, setUser] = useState<User | null>(null);
+  console.log("<window>");
+  console.log(window);
+  console.log("</window>");
+  const router = typeof window !== "undefined" ? useRouter() : null;
+
+  useEffect(() => {
+    try {
+      const session = await getServerAuthSession();
+      setUser(session?.user);
+    } catch (error) {
+      console.error("Error checking authentication:", error);
+      setUser(null);
+    }
+    // Ensure router is available before using it
+    if (!router) return;
+
+    // Check authentication status
+    const checkAuth = async () => {
+      try {
+        const response = await fetch("/api/auth/me");
+        if (response.ok) {
+          const userData = await response.json();
+          setUser(userData);
+        } else {
+          setUser(null);
+        }
+      } catch (error) {
+        console.error("Error checking authentication:", error);
+        setUser(null);
+      }
+    };
+
+    checkAuth();
+  }, [router]); // Add router to dependency array
+
+  // Ensure all router usages are guarded by a client-side check
+  const login = async (credentials: { email: string; password: string }) => {
+    if (!router) return;
+
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(credentials),
+      });
+
+      if (response.ok) {
+        const userData = await response.json();
+        setUser(userData);
+        router.push("/dashboard");
+      } else {
+        throw new Error("Login failed");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      throw error;
+    }
+  };
+
+  const logout = async () => {
+    if (!router) return;
+
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+      setUser(null);
+      router.push("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
+
+  const signUp = async (userData: { email: string; password: string }) => {
+    if (!router) return;
+
+    try {
+      const response = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(userData),
+      });
+
+      if (response.ok) {
+        const newUser = await response.json();
+        setUser(newUser);
+        router.push("/dashboard");
+      } else {
+        throw new Error("Signup failed");
+      }
+    } catch (error) {
+      console.error("Signup error:", error);
+      throw error;
+    }
+  };
+
+  const updateUser = async (userData: { email: string; password: string }) => {
+    if (!router) return;
+
+    try {
+      const response = await fetch("/api/user/update", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(userData),
+      });
+
+      if (response.ok) {
+        const updatedUser = await response.json();
+        setUser(updatedUser);
+      } else {
+        throw new Error("User update failed");
+      }
+    } catch (error) {
+      console.error("User update error:", error);
+      throw error;
+    }
+  };
+
+  return { user, login, logout, signUp, updateUser };
+}

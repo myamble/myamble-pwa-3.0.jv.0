@@ -1,10 +1,10 @@
 "use client";
 
-import { useAuth } from "~/hooks/useAuth";
-import { Button } from "~/components/ui/button";
+import { useAuth } from "~/app/_hooks/useAuth";
+import { Button } from "~/app/_components/ui/button";
 import Link from "next/link";
-import ParticipantDashboard from "~/components/dashboard/ParticipantDashboard";
-import SocialWorkerDashboard from "~/components/dashboard/SocialWorkerDashboard";
+import ParticipantDashboard from "~/app/_components/dashboard/ParticipantDashboard";
+import SocialWorkerDashboard from "~/app/_components/dashboard/SocialWorkerDashboard";
 
 export default function Home() {
   const { user } = useAuth();

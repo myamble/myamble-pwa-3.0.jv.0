@@ -2,10 +2,10 @@
 "use client";
 
 import { z } from "zod";
-import { useAuth } from "~/hooks/useAuth";
-import CustomForm from "~/components/Form";
+import { useAuth } from "~/app/_hooks/useAuth";
+import CustomForm from "~/app/_components/Form";
 import { useState } from "react";
-import { Alert, AlertDescription } from "~/components/ui/alert";
+import { Alert, AlertDescription } from "~/app/_components/ui/alert";
 
 const accountSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -16,7 +16,7 @@ export default function Account() {
   const { user, updateUser } = useAuth();
   const [message, setMessage] = useState({ type: "", content: "" });
 
-  const handleUpdateProfile = async (data) => {
+  const handleUpdateProfile = async (data: { name: string; email: string }) => {
     try {
       await updateUser(data);
       setMessage({ type: "success", content: "Profile updated successfully" });

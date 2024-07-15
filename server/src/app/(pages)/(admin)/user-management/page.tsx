@@ -3,10 +3,10 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "~/hooks/useAuth";
+import { useAuth } from "~/app/_hooks/useAuth";
 import { api } from "~/trpc/react";
-import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
+import { Button } from "~/app/_components/ui/button";
+import { Input } from "~/app/_components/ui/input";
 import {
   Table,
   TableBody,
@@ -14,16 +14,20 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "~/components/ui/table";
+} from "~/app/_components/ui/table";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "~/components/ui/select";
-import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
-import { Spinner } from "~/components/ui/spinner";
+} from "~/app/_components/ui/select";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "~/app/_components/ui/alert";
+import { Spinner } from "~/app/_components/ui/spinner";
 
 export default function UserManagement() {
   const router = useRouter();
