@@ -1,3 +1,4 @@
+"use client";
 // hooks/useAuth.tsx
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
@@ -6,10 +7,7 @@ import { getServerAuthSession } from "~/server/auth";
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
-  console.log("<window>");
-  console.log(window);
-  console.log("</window>");
-  const router = typeof window !== "undefined" ? useRouter() : null;
+  const router = useRouter();
 
   useEffect(() => {
     // Ensure router is available before using it

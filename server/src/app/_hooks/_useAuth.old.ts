@@ -1,3 +1,4 @@
+"use client";
 // hooks/useAuth.tsx
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
@@ -6,22 +7,10 @@ import { getServerAuthSession } from "~/server/auth";
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
-  console.log("<window>");
-  console.log(window);
-  console.log("</window>");
-  const router = typeof window !== "undefined" ? useRouter() : null;
+  // if (!window) return;
+  const router = useRouter();
 
   useEffect(() => {
-    try {
-      const session = await getServerAuthSession();
-      setUser(session?.user);
-    } catch (error) {
-      console.error("Error checking authentication:", error);
-      setUser(null);
-    }
-    // Ensure router is available before using it
-    if (!router) return;
-
     // Check authentication status
     const checkAuth = async () => {
       try {
@@ -43,8 +32,6 @@ export function useAuth() {
 
   // Ensure all router usages are guarded by a client-side check
   const login = async (credentials: { email: string; password: string }) => {
-    if (!router) return;
-
     try {
       const response = await fetch("/api/auth/login", {
         method: "POST",
@@ -66,8 +53,6 @@ export function useAuth() {
   };
 
   const logout = async () => {
-    if (!router) return;
-
     try {
       await fetch("/api/auth/logout", { method: "POST" });
       setUser(null);
@@ -78,8 +63,6 @@ export function useAuth() {
   };
 
   const signUp = async (userData: { email: string; password: string }) => {
-    if (!router) return;
-
     try {
       const response = await fetch("/api/auth/signup", {
         method: "POST",
@@ -101,8 +84,6 @@ export function useAuth() {
   };
 
   const updateUser = async (userData: { email: string; password: string }) => {
-    if (!router) return;
-
     try {
       const response = await fetch("/api/user/update", {
         method: "PUT",
