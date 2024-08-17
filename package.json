@@ -15,7 +15,7 @@
     "@auth/drizzle-adapter": "^0.3.7",
     "@azure/storage-blob": "^12.17.0",
     "@e2b/code-interpreter": "^0.0.8",
-    "@electric-sql/pglite": "^0.2.1",
+    "@electric-sql/pglite": "^0.2.2",
     "@hookform/resolvers": "^3.9.0",
     "@planetscale/database": "^1.11.0",
     "@radix-ui/react-dropdown-menu": "^2.1.1",

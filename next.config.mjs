@@ -5,6 +5,21 @@
 await import("./src/server/env.mjs");
 
 /** @type {import("next").NextConfig} */
-const config = {};
+const config = {
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+      };
+    }
+    return config;
+  },
+  experimental: {
+    serverComponentsExternalPackages: ['@electric-sql/pglite'],
+  },
+};
 
 export default config;
