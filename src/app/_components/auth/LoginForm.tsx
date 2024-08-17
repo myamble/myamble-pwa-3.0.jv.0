@@ -9,11 +9,13 @@ const loginSchema = z.object({
   password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
+type LoginFormData = z.infer<typeof loginSchema>;
+
 export default function LoginForm() {
   const { login } = useAuth();
   const [error, setError] = useState("");
 
-  const handleLogin = async (data) => {
+  const handleLogin = async (data: LoginFormData) => {
     try {
       await login(data);
     } catch (err) {

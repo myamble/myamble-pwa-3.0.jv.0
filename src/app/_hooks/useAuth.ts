@@ -1,24 +1,21 @@
 "use client";
 // hooks/useAuth.tsx
 import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
-import { User } from "next-auth";
-import { getServerAuthSession } from "~/server/auth";
+import { useRouter } from "next/navigation";
+import type { User } from "next-auth";
+// import { getServerAuthSession } from "~/server/auth";
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
 
   useEffect(() => {
-    // Ensure router is available before using it
-    if (!router) return;
-
     // Check authentication status
     const checkAuth = async () => {
       try {
         const response = await fetch("/api/auth/me");
         if (response.ok) {
-          const userData = await response.json();
+          const userData = (await response.json()) as User;
           setUser(userData);
         } else {
           setUser(null);
@@ -29,8 +26,8 @@ export function useAuth() {
       }
     };
 
-    checkAuth();
-  }, [router]); // Add router to dependency array
+    checkAuth().catch((error) => console.error("Error in checkAuth:", error));
+  }, []);
 
   // Ensure all router usages are guarded by a client-side check
   const login = async (credentials: { email: string; password: string }) => {
@@ -44,7 +41,7 @@ export function useAuth() {
       });
 
       if (response.ok) {
-        const userData = await response.json();
+        const userData = (await response.json()) as User;
         setUser(userData);
         router.push("/dashboard");
       } else {
@@ -79,7 +76,7 @@ export function useAuth() {
       });
 
       if (response.ok) {
-        const newUser = await response.json();
+        const newUser = (await response.json()) as User;
         setUser(newUser);
         router.push("/dashboard");
       } else {
@@ -102,7 +99,7 @@ export function useAuth() {
       });
 
       if (response.ok) {
-        const updatedUser = await response.json();
+        const updatedUser = (await response.json()) as User;
         setUser(updatedUser);
       } else {
         throw new Error("User update failed");
