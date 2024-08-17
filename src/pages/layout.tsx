@@ -6,7 +6,7 @@ import { Providers } from "~/_Theme/Providers";
 import Header from "~/components/shadcn/Header";
 import Footer from "~/components/shadcn/Footer";
 import { ServiceWorkerRegistration } from "~/components/ServiceWorkerRegistration";
-import { cn } from "~/pages/_lib/utils";
+import { cn } from "~/lib/utils";
 
 const inter = Inter({
   subsets: ["latin"],

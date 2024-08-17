@@ -8,7 +8,7 @@ import {
 } from "@radix-ui/react-icons";
 import * as MenubarPrimitive from "@radix-ui/react-menubar";
 
-import { cn } from "~/pages/_lib/utils";
+import { cn } from "~/lib/utils";
 
 const MenubarMenu = MenubarPrimitive.Menu;
 
@@ -239,7 +239,7 @@ export {
   MenubarShortcut,
 };
 
-// src/app/_components/ui/menubar.tsx
+// src/app/_components/shadcn/menubar.tsx
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
 import { ThemeToggle } from "./ThemeToggle";

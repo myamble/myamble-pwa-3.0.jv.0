@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 import { useAuth } from "~/hooks/useAuth";
-import { cn } from "~/pages/_lib/utils";
+import { cn } from "~/lib/utils";
 import { Button } from "~/components/shadcn/button";
 import {
   DropdownMenu,

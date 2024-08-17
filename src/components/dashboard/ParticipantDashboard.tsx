@@ -9,7 +9,7 @@ import {
 } from "~/components/shadcn/card";
 import { Button } from "~/components/shadcn/button";
 import Link from "next/link";
-import { Badge } from "~/components/ui/badge";
+import { Badge } from "~/components/shadcn/badge";
 
 export default function ParticipantDashboard() {
   const { user } = useAuth();

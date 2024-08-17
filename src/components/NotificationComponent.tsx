@@ -6,7 +6,7 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "~/components/ui/popover";
+} from "~/components/shadcn/popover";
 import { useSSE } from "~/lib/hooks/useSSE";
 import { api } from "~/trpc/react";
 
